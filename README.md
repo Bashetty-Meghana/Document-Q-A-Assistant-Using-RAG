@@ -13,13 +13,13 @@ Searching through hundreds of pages of PDF documents manually is time-consuming 
 ## 3. Objectives
 - Extract and chunk text from local PDF documents while preserving source page metadata.
 - Convert text chunks into dense vector embeddings using open-source sentence-transformers.
-- Build and query a local FAISS vector database to retrieve the top matching document passages.
+- Build and query a local FAISS vector database to retrieve top matching document passages.
 - Generate grounded, factual responses using a local Llama 3.2 (3B) model via Ollama.
 - Provide an intuitive Streamlit web interface displaying generated answers and exact source citations.
 
 ## 4. Features
-- **100% Local & Free**: Operates entirely offline without cloud APIs (no OpenAI, Gemini, or paid services required).
-- **Strict Grounding**: The LLM is instructed to answer exclusively using the retrieved context; if unavailable, it clearly states it cannot find the answer.
+- **100% Local Execution**: Operates entirely offline without cloud APIs (no OpenAI, Gemini, or paid services required).
+- **Strict Grounding**: Constrained to answer exclusively using retrieved document context. Automatically indicates when information is unavailable.
 - **Source Verification**: Displays document file names and exact page numbers for every answer.
 - **Interactive Interface**: Modern Streamlit web UI with clear buttons, document list sidebar, and sample query helpers.
 
@@ -30,7 +30,7 @@ Searching through hundreds of pages of PDF documents manually is time-consuming 
 - **Vector Database**: FAISS (`IndexFlatIP`)
 - **Local LLM Engine**: Ollama (`llama3.2:3b`)
 - **Web Application**: Streamlit
-- **Data Analysis**: pandas
+- **Data Processing**: pandas
 
 ## 6. System Architecture
 ```
@@ -75,8 +75,6 @@ The system indexes 6 open PDF documents:
 - `Artificial_intelligence.pdf` — Core concepts of AI and machine learning.
 - `Machine_learning.pdf` — Supervised, unsupervised, and reinforcement learning fundamentals.
 - `kecs111.pdf` — NCERT Class 11 Computer Science textbook chapter (Hardware, OS, Compilers).
-
-*Document Licensing*: All documents are public academic/policy PDFs provided for educational purposes.
 
 ## 9. Chunking Strategy
 - **Chunk Size**: 700 characters
@@ -163,36 +161,38 @@ python build_index.py
 ```
 
 ## 22. Run Application
-Launch the Streamlit web application:
+Launch the Streamlit web application using the exact working command:
 ```powershell
-streamlit run app.py
+streamlit run app.py --server.fileWatcherType none
 ```
 Open `http://localhost:8501` in your browser.
 
-## 23. Example Questions (15-Question Test Benchmark)
-1. *What are the revised grievance redressal timelines under the IT Rules?*
-2. *What is stated in Rule 3(3) of the IT Rules, 2021?*
-3. *What are the main objectives of the Government of India Open Source Software Policy?*
-4. *What are the benefits of using Open Source Software (OSS) in e-Governance?*
-5. *What are the key applications of Generative AI?*
-6. *What is Artificial Intelligence according to the introductory document?*
-7. *What are the main types of Machine Learning algorithms?*
-8. *What is the difference between supervised and unsupervised machine learning?*
-9. *What is a compiler and how does it translate source code?*
-10. *What is the primary role of an operating system in a computer system?*
-11. *What is the difference between primary memory and secondary memory?*
-12. *What are common frequently asked questions regarding IT grievance procedures?*
-13. *What is the role of deep learning in modern AI technology?*
-14. *What are transformer models in Generative AI?*
-15. *What is the real-time stock price of Apple Inc. today?* *(Out-of-scope test)*
+## 23. Test Set Benchmark Questions (15 Questions from test_set.csv)
+1. *What are the revised grievance redressal timelines under the IT Rules?* (Source: `Policy-Document.pdf`)
+2. *What is stated in Rule 3(3) of the IT Rules, 2021?* (Source: `Policy-Document.pdf`)
+3. *What are the main objectives of the Government of India Open Source Software Policy?* (Source: `Policy-Document.pdf`)
+4. *What are the benefits of using Open Source Software (OSS) in e-Governance?* (Source: `Policy-Document.pdf`)
+5. *What are the key applications of Generative AI?* (Source: `Generative_AI.pdf`)
+6. *What is Artificial Intelligence according to the introductory document?* (Source: `Artificial_intelligence.pdf`)
+7. *What are the main types of Machine Learning algorithms?* (Source: `Machine_learning.pdf`)
+8. *What is the difference between supervised and unsupervised machine learning?* (Source: `Machine_learning.pdf`)
+9. *What is a compiler and how does it translate source code?* (Source: `kecs111.pdf`)
+10. *What is the primary role of an operating system in a computer system?* (Source: `kecs111.pdf`)
+11. *What is the difference between primary memory and secondary memory?* (Source: `kecs111.pdf`)
+12. *What are common frequently asked questions regarding IT grievance procedures?* (Source: `fqa.pdf`)
+13. *What is the role of deep learning in modern AI technology?* (Source: `Artificial_intelligence.pdf`)
+14. *What are transformer models in Generative AI?* (Source: `Generative_AI.pdf`)
+15. *What is the real-time stock price of Apple Inc. today?* (Out-of-Scope Test Question — Expected Response: *"I could not find the answer in the provided documents."*)
 
-## 24. Evaluation
-Evaluation was conducted across the 15 test questions using a manual ground-truth comparison protocol. For each query, the generated answer was evaluated for factual correctness against the expected answer, presence of retrieved source page numbers, and compliance with grounding rules.
-- **Results Summary**: All 15 benchmark questions returned grounded, correct answers matching retrieved context, and the out-of-scope question was correctly rejected. Full evaluation details are recorded in [`test_results.csv`](file:///c:/Users/cnuba/Downloads/Document_QA_RAG/test_results.csv).
+## 24. Evaluation Methodology & Results Summary
+Evaluation was performed across the 15 test questions recorded in `test_set.csv`. In empirical testing:
+- **In-Scope Queries (Q1–Q14)**: All 14 in-scope questions retrieved relevant context passages from the target PDF documents and generated factual, grounded responses with valid source document names and page numbers.
+- **Out-of-Scope Query (Q15)**: The out-of-scope query regarding real-time stock prices was correctly rejected by the model with the exact grounding message *"I could not find the answer in the provided documents."*
+- Full per-question outputs, retrieved source citations, and evaluation comments are recorded in [`test_results.csv`](file:///c:/Users/cnuba/Downloads/Document_QA_RAG/test_results.csv).
 
 ## 25. Limitations
-- **PDF Text Parsing**: PyPDF2 extracts plain text; complex embedded tables or image diagrams inside PDFs are not converted into structured data tables.
-- **Hardware Dependence**: Inference speed for local Llama 3.2 3B depends on system CPU and available RAM.
+- **PDF Text Parsing**: PyPDF2 extracts plain text; complex embedded tables or image diagrams in PDFs are not converted into structured data tables.
+- **Hardware Performance**: Local LLM inference speed depends on system CPU and available RAM.
 
 ## 26. Troubleshooting
 - **Ollama Error**: Verify Ollama is running and `ollama list` shows `llama3.2:3b`.
