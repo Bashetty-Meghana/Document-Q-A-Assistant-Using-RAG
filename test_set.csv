@@ -1,0 +1,16 @@
+Question No.,Question,Primary Target Document,Expected Answer
+1,What are the revised grievance redressal timelines under the IT Rules?,Policy-Document.pdf,Grievances regarding content removal/disablement must be acknowledged within 24 hours and resolved within 15 days (or 72 hours for specific sensitive content).
+2,"What is stated in Rule 3(3) of the IT Rules, 2021?",Policy-Document.pdf,"Intermediaries must periodically inform users at least once a year about rules, privacy policy, and user agreement updates."
+3,What are the main objectives of the Government of India Open Source Software Policy?,Policy-Document.pdf,"To promote adoption of Open Source Software (OSS) in e-Governance applications, lower TCO, reduce vendor lock-in, and foster innovation."
+4,What are the benefits of using Open Source Software (OSS) in e-Governance?,Policy-Document.pdf,"Cost savings, customization freedom, security transparency, interoperability, and independence from proprietary vendor lock-in."
+5,What are the key applications of Generative AI?,Generative_AI.pdf,"Text generation, code synthesis, image generation, audio/music creation, drug discovery, and conversational AI assistants."
+6,What is Artificial Intelligence according to the introductory document?,Artificial_intelligence.pdf,AI is the field of computer science focused on building intelligent machines capable of performing tasks that typically require human intelligence.
+7,What are the main types of Machine Learning algorithms?,Machine_learning.pdf,"Supervised learning, unsupervised learning, semi-supervised learning, and reinforcement learning."
+8,What is the difference between supervised and unsupervised machine learning?,Machine_learning.pdf,"Supervised learning uses labeled training data to predict outcomes, whereas unsupervised learning finds hidden patterns/clusters in unlabeled data."
+9,What is a compiler and how does it translate source code?,kecs111.pdf,A compiler is a language translator that converts high-level programming language code into machine code/executable format all at once.
+10,What is the primary role of an operating system in a computer system?,kecs111.pdf,"An operating system acts as an interface between the user and hardware, managing memory, CPU scheduling, file storage, and peripheral devices."
+11,What is the difference between primary memory and secondary memory?,kecs111.pdf,"Primary memory (RAM/ROM) is fast, directly accessible by CPU, but volatile; secondary memory (HDD/SSD) is non-volatile, large capacity, for permanent storage."
+12,What are common frequently asked questions regarding IT grievance procedures?,fqa.pdf,"Questions covering Grievance Officer details, acknowledgment timelines, appeal mechanism to Grievance Appellate Committees (GAC)."
+13,What is the role of deep learning in modern AI technology?,Artificial_intelligence.pdf,"Deep learning uses multi-layered artificial neural networks to learn representations from unstructured data like images, text, and speech."
+14,What are transformer models in Generative AI?,Generative_AI.pdf,"Transformer models utilize self-attention mechanisms to process sequential data in parallel, forming the foundation of modern LLMs like GPT and Llama."
+15,What is the real-time stock price of Apple Inc. today?,N/A (Out of Scope),I could not find the answer in the provided documents.

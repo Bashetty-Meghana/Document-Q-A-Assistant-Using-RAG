@@ -1,0 +1,30 @@
+# Virtual environment
+venv/
+ENV/
+env/
+
+# Python byte-code and cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary and log files
+*.log
+scratch/
+eval_results.json
+
+# NOTE FOR GITHUB UPLOAD:
+# Large files like vector_db/faiss.index or large PDFs can optionally be excluded if exceeding GitHub limits.
+# To generate vector_db locally on any new system, simply run `python build_index.py`.
