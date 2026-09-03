@@ -169,7 +169,7 @@ Open `http://localhost:8501` in your browser.
 
 ## 23. Evaluation Benchmark Questions (15 Questions from test_set.csv)
 
-### Evaluation Benchmark Set (Exact 15 Questions):
+### Evaluation Benchmark Set (Exact 15 Questions from test_set.csv):
 1. *What are the revised grievance redressal timelines under the IT Rules?* (Source: `Policy-Document.pdf`)
 2. *What is stated in Rule 3(3) of the IT Rules, 2021?* (Source: `Policy-Document.pdf`)
 3. *What are the main objectives of the Government of India Open Source Software Policy?* (Source: `Policy-Document.pdf`)
@@ -193,7 +193,9 @@ Open `http://localhost:8501` in your browser.
 - *What are the key applications of Generative AI?*
 
 ## 24. Evaluation Methodology & Results Summary
-The system was evaluated on a 15-question benchmark. The final test results showed grounded and relevant responses for the benchmark questions, including source document/page information.
+The system was evaluated on a 15-question benchmark recorded in `test_set.csv`. The final test results showed grounded and relevant responses for the benchmark questions, including source document/page information.
+
+In `test_results.csv`, all 15 benchmark questions (15 / 15) met the evaluation criterion of returning grounded answers supported by retrieved document passages with valid page citations, or correctly returning the refusal response for the out-of-scope question. Note: This result represents performance against the specific 15-question test benchmark set, not a general model accuracy score.
 
 - **In-Scope Benchmark Queries (Q1–Q14)**: All 14 in-scope questions retrieved relevant context passages from the target PDF documents and generated factual responses with valid source document names and page numbers.
 - **Out-of-Scope Test Query (Q15)**: The out-of-scope query regarding real-time stock prices was correctly rejected by the model with the exact grounding response *"I could not find the answer in the provided documents."*
