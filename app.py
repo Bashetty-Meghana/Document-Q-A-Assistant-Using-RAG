@@ -25,6 +25,12 @@ MODEL_NAME = "llama3.2:3b"
 # -----------------------------
 @st.cache_resource
 def load_rag_resources():
+    if not INDEX_FILE.exists() or not METADATA_FILE.exists():
+        raise FileNotFoundError(
+            f"Vector database files not found in '{VECTOR_DB_DIR}'. "
+            "Please run 'python build_index.py' first to build the index."
+        )
+
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     index = faiss.read_index(str(INDEX_FILE))
 
@@ -45,7 +51,7 @@ def retrieve_chunks(question, embedding_model, index, chunks, top_k=5):
 
     results = []
     for score, index_number in zip(scores[0], indices[0]):
-        if index_number == -1:
+        if index_number == -1 or index_number >= len(chunks):
             continue
 
         result = chunks[index_number].copy()
@@ -59,6 +65,9 @@ def retrieve_chunks(question, embedding_model, index, chunks, top_k=5):
 # Generate answer using local Llama 3.2
 # -----------------------------
 def generate_answer(question, retrieved_chunks):
+    if not retrieved_chunks:
+        return "I could not find the answer in the provided documents."
+
     context_parts = []
     for chunk in retrieved_chunks:
         context_parts.append(
@@ -90,17 +99,19 @@ Question:
 Answer:
 """
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
-
-    return response["message"]["content"]
+    try:
+        response = ollama.chat(
+            model=MODEL_NAME,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        return response["message"]["content"]
+    except Exception as e:
+        return f"Error connecting to local Ollama service: {str(e)}. Please make sure Ollama is running and '{MODEL_NAME}' is installed."
 
 
 # -----------------------------
@@ -120,6 +131,7 @@ with st.sidebar:
     - **LLM**: Local Llama 3.2 (3B via Ollama)
     - **Embeddings**: `all-MiniLM-L6-v2`
     - **Vector Store**: FAISS
+    - **Framework**: Streamlit
     """)
 
     st.divider()
@@ -143,9 +155,10 @@ st.markdown("Ask plain-language questions about your loaded PDF documents. Answe
 # Load resources
 try:
     embedding_model, index, chunks = load_rag_resources()
-    st.success(f"System ready! Index contains **{len(chunks)}** text chunks.", icon="✅")
+    st.success(f"System ready! Index contains **{len(chunks)}** text chunks from **{len(pdf_files)}** PDF documents.", icon="✅")
 except Exception as e:
-    st.error(f"Error loading vector database: {e}. Please run `python build_index.py` first.")
+    st.error(f"Error loading vector database: {e}")
+    st.info("Run `python build_index.py` in your terminal to build the vector database.")
     st.stop()
 
 # User Question Input
@@ -166,7 +179,7 @@ if clear_button:
     st.rerun()
 
 # Sample Questions Helper
-with st.expander("💡 Sample Questions for Viva & Testing"):
+with st.expander("💡 Sample Questions for Testing"):
     st.markdown("""
     1. *What are the revised grievance redressal timelines under the IT Rules?*
     2. *What is stated in Rule 3(3) of the IT Rules, 2021?*
@@ -177,7 +190,7 @@ with st.expander("💡 Sample Questions for Viva & Testing"):
     """)
 
 # Process Question
-if question:
+if question and question.strip():
     with st.spinner("Searching documents and generating grounded answer..."):
         retrieved_chunks = retrieve_chunks(
             question,
@@ -199,17 +212,19 @@ if question:
     # Display Sources
     st.subheader("📍 Retrieved Sources")
     
-    # Group unique sources
-    unique_sources = set()
-    for chunk in retrieved_chunks:
-        unique_sources.add((chunk['source'], chunk['page']))
+    if retrieved_chunks:
+        unique_sources = set()
+        for chunk in retrieved_chunks:
+            unique_sources.add((chunk['source'], chunk['page']))
 
-    st.markdown("**Source Pages Cited:**")
-    for doc_name, page_num in sorted(unique_sources):
-        st.markdown(f"- 📄 **{doc_name}** — Page {page_num}")
+        st.markdown("**Source Pages Cited:**")
+        for doc_name, page_num in sorted(unique_sources):
+            st.markdown(f"- 📄 **{doc_name}** — Page {page_num}")
 
-    with st.expander("🔍 View Retrieved Text Chunks (Raw Context)"):
-        for i, chunk in enumerate(retrieved_chunks, start=1):
-            st.markdown(f"**Chunk {i}** — `{chunk['source']}` (Page {chunk['page']}) | Similarity Score: `{chunk['score']:.4f}`")
-            st.text(chunk['text'])
-            st.divider()
+        with st.expander("🔍 View Retrieved Text Chunks (Raw Context)"):
+            for i, chunk in enumerate(retrieved_chunks, start=1):
+                st.markdown(f"**Chunk {i}** — `{chunk['source']}` (Page {chunk['page']}) | Similarity Score: `{chunk['score']:.4f}`")
+                st.text(chunk['text'])
+                st.divider()
+    else:
+        st.write("No relevant sources retrieved.")

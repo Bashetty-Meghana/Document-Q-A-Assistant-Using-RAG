@@ -1,39 +1,43 @@
-# Document Question-Answering Assistant Using RAG
+# Document Q&A Assistant Using RAG
 
 An end-to-end local **Retrieval-Augmented Generation (RAG)** application built using open-source tools. Ask plain-language questions against domain PDF documents and receive precise, context-grounded answers with exact source document and page citations.
 
 ---
 
-## 📌 Project Overview & Features
+## 1. Project Overview
+This project provides a fully offline, local document question-answering assistant. Organizations often store critical knowledge across lengthy policy manuals, FAQs, and textbooks. This assistant enables users to query these local PDF documents in natural language, retrieving relevant passages and generating grounded answers without sending data to external cloud services.
 
-- **100% Local Execution**: Runs entirely on a local machine using open-source tools. Requires no paid APIs, cloud services, or external accounts.
-- **Strict Fact Grounding**: Constrained to answer exclusively using retrieved document context. Automatically indicates when information is unavailable in the document set.
-- **Source Page Verification**: Displays source document names and page numbers for every generated answer.
-- **Interactive UI**: Built with Streamlit, providing an intuitive chat interface, document list sidebar, and sample query helpers.
+## 2. Problem Statement
+Searching through hundreds of pages of PDF documents manually is time-consuming and inefficient. While standard Large Language Models (LLMs) can answer queries, they lack access to private offline documents and frequently hallucinate. This project addresses both issues by combining semantic document retrieval with strict prompt grounding on a local language model.
 
----
+## 3. Objectives
+- Extract and chunk text from local PDF documents while preserving source page metadata.
+- Convert text chunks into dense vector embeddings using open-source sentence-transformers.
+- Build and query a local FAISS vector database to retrieve the top matching document passages.
+- Generate grounded, factual responses using a local Llama 3.2 (3B) model via Ollama.
+- Provide an intuitive Streamlit web interface displaying generated answers and exact source citations.
 
-## 🛠️ Technology Stack
+## 4. Features
+- **100% Local & Free**: Operates entirely offline without cloud APIs (no OpenAI, Gemini, or paid services required).
+- **Strict Grounding**: The LLM is instructed to answer exclusively using the retrieved context; if unavailable, it clearly states it cannot find the answer.
+- **Source Verification**: Displays document file names and exact page numbers for every answer.
+- **Interactive Interface**: Modern Streamlit web UI with clear buttons, document list sidebar, and sample query helpers.
 
-| Layer | Tool / Library | Description |
-| --- | --- | --- |
-| **Language** | Python 3.13 | Core programming language |
-| **Document Loader** | PyPDF2 | PDF text extraction and page metadata tracking |
-| **Embeddings** | `sentence-transformers` (`all-MiniLM-L6-v2`) | Generates dense 384-dimensional vector embeddings |
-| **Vector Store** | FAISS (`IndexFlatIP`) | High-performance vector similarity search |
-| **Local LLM Engine** | Ollama (`llama3.2:3b`) | Quantized local language model inference |
-| **Web Interface** | Streamlit | Web frontend application framework |
-| **Data Processing** | pandas | Data handling and evaluation metrics |
+## 5. Technologies Used
+- **Language**: Python 3.13
+- **Document Loading & Extraction**: PyPDF2
+- **Embeddings**: `sentence-transformers` (`all-MiniLM-L6-v2`)
+- **Vector Database**: FAISS (`IndexFlatIP`)
+- **Local LLM Engine**: Ollama (`llama3.2:3b`)
+- **Web Application**: Streamlit
+- **Data Analysis**: pandas
 
----
-
-## 🏗️ System Architecture
-
+## 6. System Architecture
 ```
 [ PDF Documents ] (documents/*.pdf)
        │
        ▼
-[ PyPDF2 Extraction & Text Cleaning ]
+[ PyPDF2 Text Extraction & Cleaning ]
        │
        ▼
 [ Sliding-Window Chunking (700 chars, 150 overlap) ]
@@ -54,10 +58,57 @@ An end-to-end local **Retrieval-Augmented Generation (RAG)** application built u
                                        [ Answer & Source Citations UI ]
 ```
 
----
+## 7. RAG Workflow
+1. **Document Ingestion**: PDFs are read page by page using PyPDF2.
+2. **Text Preprocessing & Chunking**: Text is cleaned and split into overlapping 700-character segments.
+3. **Vector Embedding**: Each chunk is transformed into a 384-dimensional vector using `all-MiniLM-L6-v2`.
+4. **FAISS Indexing**: Normalized embeddings are indexed in FAISS (`IndexFlatIP`) for fast cosine similarity search.
+5. **Retrieval**: When a query is submitted, FAISS retrieves the top-5 most relevant chunks.
+6. **Local LLM Generation**: The retrieved text chunks are formatted into a strict context prompt for Ollama Llama 3.2 (3B).
+7. **Display**: The generated answer and source page citations are presented in the Streamlit UI.
 
-## 📁 Repository Structure
+## 8. Dataset / Documents
+The system indexes 6 open PDF documents:
+- `Policy-Document.pdf` — Government IT Policy, IT Rules 2021, and Open Source Software Policy.
+- `fqa.pdf` — Frequently Asked Questions regarding IT Grievance Redressal.
+- `Generative_AI.pdf` — Overview of Generative AI principles and LLM architectures.
+- `Artificial_intelligence.pdf` — Core concepts of AI and machine learning.
+- `Machine_learning.pdf` — Supervised, unsupervised, and reinforcement learning fundamentals.
+- `kecs111.pdf` — NCERT Class 11 Computer Science textbook chapter (Hardware, OS, Compilers).
 
+*Document Licensing*: All documents are public academic/policy PDFs provided for educational purposes.
+
+## 9. Chunking Strategy
+- **Chunk Size**: 700 characters
+- **Chunk Overlap**: 150 characters
+- **Rationale**: 700 characters captures 3–5 complete sentences, providing sufficient semantic context for the embedding model while maintaining high retrieval precision. Overlapping by 150 characters prevents boundary information loss across split chunks.
+
+## 10. Embedding Model
+- **Model**: `sentence-transformers/all-MiniLM-L6-v2`
+- **Dimensions**: 384 floating-point dimensions
+- **Normalization**: Vectors are L2-normalized so that inner product search (`IndexFlatIP`) corresponds to exact cosine similarity.
+
+## 11. FAISS Retrieval
+- **Index Type**: `faiss.IndexFlatIP` (Flat Inner Product)
+- **Top-K**: 5 chunks retrieved per user query
+- **Storage**: `vector_db/faiss.index` (2.75 MB) and `vector_db/metadata.json` (1.30 MB) tracking text content, source file names, and page numbers.
+
+## 12. Local Llama 3.2 Model
+- **Model**: `llama3.2:3b` (3 Billion parameters, quantized for laptop inference)
+- **Engine**: Ollama local server
+- **Grounding Rule**: Instructed to answer strictly from retrieved context and refuse out-of-scope queries with *"I could not find the answer in the provided documents."*
+
+## 13. Ollama Setup
+Ollama provides a local REST service for running open-source LLMs offline. Download Ollama for Windows from [ollama.com](https://ollama.com/).
+
+## 14. Streamlit Application
+The frontend (`app.py`) provides an interactive web chat layout featuring:
+- User query text box with a clear button.
+- Sidebar detailing project architecture and loaded PDF documents.
+- Sample query list helper.
+- Expandable raw retrieved chunk context viewer.
+
+## 15. Project Structure
 ```
 Document_QA_RAG/
 ├── documents/                  # Directory containing input PDF documents
@@ -80,77 +131,70 @@ Document_QA_RAG/
 └── README.md                   # Project documentation
 ```
 
----
+## 16. Installation
+Clone or download the repository to your local computer.
 
-## 🚀 Setup & Execution Guide
-
-### Prerequisites
-- Windows 10/11 with PowerShell
-- Python 3.10+
-- [Ollama](https://ollama.com/) installed and running locally
-
----
-
-### Step 1: Install Dependencies
-Open PowerShell in the project root directory:
+## 17. Windows Setup
+Open Windows PowerShell and navigate to the project directory:
 ```powershell
+cd c:\Users\cnuba\Downloads\Document_QA_RAG
 python -m venv venv
 .\venv\Scripts\Activate.ps1
+```
+
+## 18. Dependency Installation
+```powershell
 pip install -r requirements.txt
 ```
 
----
+## 19. Ollama Setup (Local LLM Server)
+Ensure the Ollama application is installed and running in your Windows system tray.
 
-### Step 2: Download Local LLM Model
+## 20. Model Setup
+Download the local Llama 3.2 3B model:
 ```powershell
 ollama pull llama3.2:3b
 ```
 
----
-
-### Step 3: Build Vector Database Index
-Process all PDF documents in `documents/` and generate the FAISS vector index:
+## 21. Build Vector Database
+Generate embeddings and build the FAISS index:
 ```powershell
 python build_index.py
 ```
 
----
-
-### Step 4: Run Streamlit Web Application
+## 22. Run Application
+Launch the Streamlit web application:
 ```powershell
 streamlit run app.py
 ```
-Access the application in your web browser at `http://localhost:8501`.
+Open `http://localhost:8501` in your browser.
 
----
+## 23. Example Questions (15-Question Test Benchmark)
+1. *What are the revised grievance redressal timelines under the IT Rules?*
+2. *What is stated in Rule 3(3) of the IT Rules, 2021?*
+3. *What are the main objectives of the Government of India Open Source Software Policy?*
+4. *What are the benefits of using Open Source Software (OSS) in e-Governance?*
+5. *What are the key applications of Generative AI?*
+6. *What is Artificial Intelligence according to the introductory document?*
+7. *What are the main types of Machine Learning algorithms?*
+8. *What is the difference between supervised and unsupervised machine learning?*
+9. *What is a compiler and how does it translate source code?*
+10. *What is the primary role of an operating system in a computer system?*
+11. *What is the difference between primary memory and secondary memory?*
+12. *What are common frequently asked questions regarding IT grievance procedures?*
+13. *What is the role of deep learning in modern AI technology?*
+14. *What are transformer models in Generative AI?*
+15. *What is the real-time stock price of Apple Inc. today?* *(Out-of-scope test)*
 
-## 🧪 Evaluation Results
+## 24. Evaluation
+Evaluation was conducted across the 15 test questions using a manual ground-truth comparison protocol. For each query, the generated answer was evaluated for factual correctness against the expected answer, presence of retrieved source page numbers, and compliance with grounding rules.
+- **Results Summary**: All 15 benchmark questions returned grounded, correct answers matching retrieved context, and the out-of-scope question was correctly rejected. Full evaluation details are recorded in [`test_results.csv`](file:///c:/Users/cnuba/Downloads/Document_QA_RAG/test_results.csv).
 
-The system was evaluated against a 15-question benchmark covering all domain documents, policy timelines, and out-of-scope queries:
+## 25. Limitations
+- **PDF Text Parsing**: PyPDF2 extracts plain text; complex embedded tables or image diagrams inside PDFs are not converted into structured data tables.
+- **Hardware Dependence**: Inference speed for local Llama 3.2 3B depends on system CPU and available RAM.
 
-| Metric | Result |
-| --- | --- |
-| **Total Test Questions** | 15 |
-| **Passed (Grounded & Correct)** | 15 / 15 (100%) |
-| **Hallucination Rate** | 0% |
-| **Out-of-Scope Handling** | Passed |
-
-Refer to [`test_results.csv`](file:///c:/Users/cnuba/Downloads/Document_QA_RAG/test_results.csv) for full evaluation output.
-
----
-
-## 💡 Sample Test Questions
-
-1. **Grievance Timelines**: *"What are the revised grievance redressal timelines under the IT Rules?"*
-2. **IT Rules Details**: *"What is stated in Rule 3(3) of the IT Rules, 2021?"*
-3. **Open Source Policy**: *"What are the main objectives of the Government of India Open Source Software Policy?"*
-4. **GenAI Applications**: *"What are the key applications of Generative AI?"*
-5. **Computer Science**: *"What is a compiler and how does it translate source code?"*
-6. **Out-of-Scope Test**: *"What is the real-time stock price of Apple Inc. today?"* *(Expected: Answer unavailable)*
-
----
-
-## ⚠️ System Limitations
-
-- **Text Extraction**: PyPDF2 extracts plain text; complex nested tables or figures in PDFs are not parsed as structured tables.
-- **Hardware Performance**: Local LLM inference speed depends on available system CPU and memory resources.
+## 26. Troubleshooting
+- **Ollama Error**: Verify Ollama is running and `ollama list` shows `llama3.2:3b`.
+- **Vector DB Missing**: Run `python build_index.py` to create `vector_db/faiss.index`.
+- **PyPDF2 Import Error**: Ensure virtual environment is activated (`.\venv\Scripts\Activate.ps1`) and run `pip install -r requirements.txt`.
