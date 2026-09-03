@@ -167,7 +167,9 @@ streamlit run app.py --server.fileWatcherType none
 ```
 Open `http://localhost:8501` in your browser.
 
-## 23. Test Set Benchmark Questions (15 Questions from test_set.csv)
+## 23. Evaluation Benchmark Questions (15 Questions from test_set.csv)
+
+### Evaluation Benchmark Set (Exact 15 Questions):
 1. *What are the revised grievance redressal timelines under the IT Rules?* (Source: `Policy-Document.pdf`)
 2. *What is stated in Rule 3(3) of the IT Rules, 2021?* (Source: `Policy-Document.pdf`)
 3. *What are the main objectives of the Government of India Open Source Software Policy?* (Source: `Policy-Document.pdf`)
@@ -184,11 +186,19 @@ Open `http://localhost:8501` in your browser.
 14. *What are transformer models in Generative AI?* (Source: `Generative_AI.pdf`)
 15. *What is the real-time stock price of Apple Inc. today?* (Out-of-Scope Test Question — Expected Response: *"I could not find the answer in the provided documents."*)
 
+### Optional Quick Test Samples (Available in UI Helper Expander):
+- *What are the revised grievance redressal timelines under the IT Rules?*
+- *What is stated in Rule 3(3) of the IT Rules, 2021?*
+- *What are the main objectives of the Government of India Open Source Software Policy?*
+- *What are the key applications of Generative AI?*
+
 ## 24. Evaluation Methodology & Results Summary
-Evaluation was performed across the 15 test questions recorded in `test_set.csv`. In empirical testing:
-- **In-Scope Queries (Q1–Q14)**: All 14 in-scope questions retrieved relevant context passages from the target PDF documents and generated factual, grounded responses with valid source document names and page numbers.
-- **Out-of-Scope Query (Q15)**: The out-of-scope query regarding real-time stock prices was correctly rejected by the model with the exact grounding message *"I could not find the answer in the provided documents."*
-- Full per-question outputs, retrieved source citations, and evaluation comments are recorded in [`test_results.csv`](file:///c:/Users/cnuba/Downloads/Document_QA_RAG/test_results.csv).
+The system was evaluated on a 15-question benchmark. The final test results showed grounded and relevant responses for the benchmark questions, including source document/page information.
+
+- **In-Scope Benchmark Queries (Q1–Q14)**: All 14 in-scope questions retrieved relevant context passages from the target PDF documents and generated factual responses with valid source document names and page numbers.
+- **Out-of-Scope Test Query (Q15)**: The out-of-scope query regarding real-time stock prices was correctly rejected by the model with the exact grounding response *"I could not find the answer in the provided documents."*
+
+Full per-question outputs, retrieved source citations, and evaluation comments are recorded in [`test_results.csv`](file:///c:/Users/cnuba/Downloads/Document_QA_RAG/test_results.csv).
 
 ## 25. Limitations
 - **PDF Text Parsing**: PyPDF2 extracts plain text; complex embedded tables or image diagrams in PDFs are not converted into structured data tables.
