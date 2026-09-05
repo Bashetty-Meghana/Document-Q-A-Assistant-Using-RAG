@@ -70,11 +70,11 @@ Searching through hundreds of pages of PDF documents manually is time-consuming 
 ## 8. Dataset / Documents
 The system indexes 6 open PDF documents:
 - `Policy-Document.pdf` — Government IT Policy, IT Rules 2021, and Open Source Software Policy.
-- `fqa.pdf` — Frequently Asked Questions regarding IT Grievance Redressal.
+- `IT_Rules FQA.pdf` — Frequently Asked Questions regarding IT Grievance Redressal.
 - `Generative_AI.pdf` — Overview of Generative AI principles and LLM architectures.
 - `Artificial_intelligence.pdf` — Core concepts of AI and machine learning.
 - `Machine_learning.pdf` — Supervised, unsupervised, and reinforcement learning fundamentals.
-- `kecs111.pdf` — NCERT Class 11 Computer Science textbook chapter (Hardware, OS, Compilers).
+- `NCERT Societal Impact.pdf` — NCERT Class 11 Computer Science textbook chapter (Hardware, OS, Compilers).
 
 ## 9. Chunking Strategy
 - **Chunk Size**: 700 characters
@@ -111,9 +111,9 @@ The frontend (`app.py`) provides an interactive web chat layout featuring:
 Document_QA_RAG/
 ├── documents/                  # Directory containing input PDF documents
 │   ├── Artificial_intelligence.pdf
-│   ├── fqa.pdf
+│   ├── IT_Rules FQA.pdf
 │   ├── Generative_AI.pdf
-│   ├── kecs111.pdf
+│   ├── NCERT Societal Impact.pdf
 │   ├── Machine_learning.pdf
 │   └── Policy-Document.pdf
 ├── vector_db/                  # FAISS index and chunk metadata
