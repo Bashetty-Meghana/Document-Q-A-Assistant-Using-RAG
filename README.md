@@ -205,11 +205,4 @@ In `test_results.csv`, all 15 benchmark questions (15 / 15) met the evaluation c
 
 Full per-question outputs, retrieved source citations, and evaluation comments are recorded in [`test_results.csv`](file:///c:/Users/cnuba/Downloads/Document_QA_RAG/test_results.csv).
 
-## 25. Limitations
-- **PDF Text Parsing**: PyPDF2 extracts plain text; complex embedded tables or image diagrams in PDFs are not converted into structured data tables.
-- **Hardware Performance**: Local LLM inference speed depends on system CPU and available RAM.
 
-## 26. Troubleshooting
-- **Ollama Error**: Verify Ollama is running and `ollama list` shows `llama3.2:3b`.
-- **Vector DB Missing**: Run `python build_index.py` to create `vector_db/faiss.index`.
-- **PyPDF2 Import Error**: Ensure virtual environment is activated (`.\venv\Scripts\Activate.ps1`) and run `pip install -r requirements.txt`.
