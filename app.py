@@ -161,22 +161,29 @@ except Exception as e:
     st.info("Run `python build_index.py` in your terminal to build the vector database.")
     st.stop()
 
+# Clear input function
+def clear_input():
+    st.session_state.question_input = ""
+
+
 # User Question Input
 col1, col2 = st.columns([4, 1])
 
 with col1:
     question = st.text_input(
         "Enter your question:",
+        key="question_input",
         placeholder="e.g., What are the revised grievance redressal timelines under the IT Rules?"
     )
 
 with col2:
     st.write("")
     st.write("")
-    clear_button = st.button("Clear Input", use_container_width=True)
-
-if clear_button:
-    st.rerun()
+    st.button(
+        "Clear Input",
+        use_container_width=True,
+        on_click=clear_input
+    )
 
 # Sample Questions Helper
 with st.expander("💡 Sample Questions for Testing"):

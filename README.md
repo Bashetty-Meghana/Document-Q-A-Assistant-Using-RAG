@@ -111,10 +111,10 @@ The frontend (`app.py`) provides an interactive web chat layout featuring:
 Document_QA_RAG/
 ├── documents/                  # Directory containing input PDF documents
 │   ├── Artificial_intelligence.pdf
-│   ├── IT_Rules FQA.pdf
 │   ├── Generative_AI.pdf
-│   ├── NCERT Societal Impact.pdf
+│   ├── IT_Rules FQA.pdf
 │   ├── Machine_learning.pdf
+│   ├── NCERT Societal Impact.pdf
 │   └── Policy-Document.pdf
 ├── vector_db/                  # FAISS index and chunk metadata
 │   ├── faiss.index
@@ -125,6 +125,7 @@ Document_QA_RAG/
 ├── .gitignore                  # Git exclusion rules
 ├── test_set.csv                # 15 evaluation benchmark questions
 ├── test_results.csv            # Detailed evaluation test matrix
+├── result_screenshot.png       # Streamlit UI & vector database status screenshot
 ├── RAG_Project_Report.docx     # Formal project report document
 └── README.md                   # Project documentation
 ```
@@ -178,10 +179,10 @@ Open `http://localhost:8501` in your browser.
 6. *What is Artificial Intelligence according to the introductory document?* (Source: `Artificial_intelligence.pdf`)
 7. *What are the main types of Machine Learning algorithms?* (Source: `Machine_learning.pdf`)
 8. *What is the difference between supervised and unsupervised machine learning?* (Source: `Machine_learning.pdf`)
-9. *What is a compiler and how does it translate source code?* (Source: `kecs111.pdf`)
-10. *What is the primary role of an operating system in a computer system?* (Source: `kecs111.pdf`)
-11. *What is the difference between primary memory and secondary memory?* (Source: `kecs111.pdf`)
-12. *What are common frequently asked questions regarding IT grievance procedures?* (Source: `fqa.pdf`)
+9. *What is a compiler and how does it translate source code?* (Source: `NCERT Societal Impact.pdf`)
+10. *What is the primary role of an operating system in a computer system?* (Source: `NCERT Societal Impact.pdf`)
+11. *What is the difference between primary memory and secondary memory?* (Source: `NCERT Societal Impact.pdf`)
+12. *What are common frequently asked questions regarding IT grievance procedures?* (Source: `IT_Rules FQA.pdf`)
 13. *What is the role of deep learning in modern AI technology?* (Source: `Artificial_intelligence.pdf`)
 14. *What are transformer models in Generative AI?* (Source: `Generative_AI.pdf`)
 15. *What is the real-time stock price of Apple Inc. today?* (Out-of-Scope Test Question — Expected Response: *"I could not find the answer in the provided documents."*)
@@ -193,6 +194,8 @@ Open `http://localhost:8501` in your browser.
 - *What are the key applications of Generative AI?*
 
 ## 24. Evaluation Methodology & Results Summary
+![Application Interface & Database Status](result_screenshot.png)
+
 The system was evaluated on a 15-question benchmark recorded in `test_set.csv`. The final test results showed grounded and relevant responses for the benchmark questions, including source document/page information.
 
 In `test_results.csv`, all 15 benchmark questions (15 / 15) met the evaluation criterion of returning grounded answers supported by retrieved document passages with valid page citations, or correctly returning the refusal response for the out-of-scope question. Note: This result represents performance against the specific 15-question test benchmark set, not a general model accuracy score.
